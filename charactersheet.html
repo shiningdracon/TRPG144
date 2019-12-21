@@ -8,6 +8,11 @@
         .dragable {
             border: 1px gray solid;
             padding: 2px;
+            text-align: center;
+        }
+
+        td {
+            text-align: center;
         }
     </style>
 </head>
@@ -95,8 +100,8 @@
             let template = `
     <tr class="basic_property_item">
         <td>${item.name}</td>
-        <td><span class="basic_property dragable" id="${item.name}" draggable="true" ondragstart="dragstart_handler(event)" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">${item.basic}</span></td>
-        <td>0</td>
+        <td><div class="basic_property dragable" id="${item.name}" draggable="true" ondragstart="dragstart_handler(event)" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">${item.basic}</div></td>
+        <td></td>
         <td><input class="adjust_growth_rate_point" type="number" value="0" min="0" max="20" onchange="on_adjust_growth_rate_change(event)"></td>
         <td><span class="growth_rate">${Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate}%</span></td>
     </tr>`;
@@ -204,6 +209,18 @@
                 },
                 {
                     name: "智力",
+                    basic: roll_dice(6, 3, -2),
+                    adjust_growth_rate: 0,
+                    training_growth_rate: 0,
+                },
+                {
+                    name: "冗余一",
+                    basic: roll_dice(6, 3, -2),
+                    adjust_growth_rate: 0,
+                    training_growth_rate: 0,
+                },
+                {
+                    name: "冗余二",
                     basic: roll_dice(6, 3, -2),
                     adjust_growth_rate: 0,
                     training_growth_rate: 0,
