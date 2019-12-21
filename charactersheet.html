@@ -41,14 +41,9 @@
         result.forEach(element => {
             item = datasheet.basic_properties.find(item => item.name == element.querySelector(".basic_property").id)
             datasheet.free_growth_rate_points -= item.adjust_growth_rate;
-            growth_rate = Math.round(item.basic * 0.3 + item.adjust_growth_rate) + item.training_growth_rate;
+            growth_rate = Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate;
             var growth_rate_element = element.querySelector(".growth_rate");
-            if (growth_rate > 20) {
-                growth_rate_element.style.color = "red";
-            } else {
-                growth_rate_element.style.color = "";
-            }
-            growth_rate_element.textContent = growth_rate;
+            growth_rate_element.textContent = growth_rate.toString() + "%";
         });
         document.getElementById("training_point").textContent = datasheet.training_point.toString();
         document.getElementById("free_growth_rate_points").textContent = datasheet.free_growth_rate_points.toString();
@@ -64,9 +59,9 @@
             let roll = roll_dice(1, 100, 0);
             if (roll <= 3){
                 return 3;
-            } else if (roll <= Math.round(Math.round(item.basic * 0.3 + item.adjust_growth_rate) / 3)) {
+            } else if (roll <= Math.round(Math.round(item.basic * 3 + item.adjust_growth_rate) / 3)) {
                 return 2;
-            } else if (roll <= Math.round(item.basic * 0.3 + item.adjust_growth_rate)) {
+            } else if (roll <= Math.round(item.basic * 3 + item.adjust_growth_rate)) {
                 return 1;
             } else {
                 return 0;
@@ -100,8 +95,8 @@
         <td>${item.name}</td>
         <td><span class="basic_property dragable" id="${item.name}" draggable="true" ondragstart="dragstart_handler(event)" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">${item.basic}</span></td>
         <td>0</td>
-        <td><input class="adjust_growth_rate_point" type="number" value="0" min="0" onchange="on_adjust_growth_rate_change(event)"></td>
-        <td><span class="growth_rate">${Math.round(item.basic * 0.3 + item.adjust_growth_rate) + item.training_growth_rate}</span></td>
+        <td><input class="adjust_growth_rate_point" type="number" value="0" min="0" max="20" onchange="on_adjust_growth_rate_change(event)"></td>
+        <td><span class="growth_rate">${Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate}%</span></td>
     </tr>`;
         return template;
     }
@@ -113,7 +108,7 @@
         <td><span class="basic_property" id="${item.name}">${item.basic}</span></td>
         <td><button class="training_button" onclick="training(event)">训练</button></td>
         <td>${item.adjust_growth_rate}</td>
-        <td><span class="growth_rate">${Math.round(item.basic * 0.3 + item.adjust_growth_rate) + item.training_growth_rate}</span></td>
+        <td><span class="growth_rate">${Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate}%</span></td>
     </tr>`;
         return template;
     }
@@ -171,43 +166,43 @@
         basic_properties: [
             {
                 name: "强壮",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
             {
                 name: "敏捷",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
             {
                 name: "才智",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
             {
                 name: "意志",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
             {
                 name: "体能",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
             {
                 name: "健康",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
             {
                 name: "智力",
-                basic: roll_dice(6, 3, 4),
+                basic: roll_dice(6, 3, -2),
                 adjust_growth_rate: 0,
                 training_growth_rate: 0,
             },
