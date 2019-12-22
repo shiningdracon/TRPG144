@@ -66,9 +66,9 @@
                 let roll = roll_dice(1, 100, 0);
                 if (roll <= 3) {
                     return 3;
-                } else if (roll <= Math.round(Math.round(item.basic * 3 + item.adjust_growth_rate) / 3)) {
+                } else if (roll <= Math.round(Math.round(item.basic * 3 + item.adjust_growth_rate) * 2 / 3)) {
                     return 2;
-                } else if (roll <= Math.round(item.basic * 3 + item.adjust_growth_rate)) {
+                } else if (roll <= Math.round(item.basic * 3 + item.adjust_growth_rate) * 2) {
                     return 1;
                 } else {
                     return 0;
