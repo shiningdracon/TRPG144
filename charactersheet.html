@@ -48,32 +48,40 @@
             result.forEach(element => {
                 item = datasheet.basic_properties.find(item => item.name == element.querySelector(".basic_property").id)
                 datasheet.free_growth_rate_points -= item.adjust_growth_rate;
-                growth_rate = Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate;
+                basic_growth_rate = item.basic * 3 + item.adjust_growth_rate + item.training_growth_rate;
                 var growth_rate_element = element.querySelector(".growth_rate");
-                growth_rate_element.textContent = growth_rate.toString() + "%";
+                growth_rate_element.textContent = basic_growth_rate.toString() + "%";
             });
             document.getElementById("training_point").textContent = datasheet.training_point.toString();
             document.getElementById("free_growth_rate_points").textContent = datasheet.free_growth_rate_points.toString();
         }
 
+        function growup(item, rate_multiplier) {
+            let roll = roll_dice(1, 100, 0);
+            if (roll <= 3) {
+                return 3;
+            } else if (roll <= Math.round((item.basic * 3 + item.adjust_growth_rate + item.training_growth_rate) * rate_multiplier / 3)) {
+                return 2;
+            } else if (roll <= (item.basic * 3 + item.adjust_growth_rat + item.training_growth_ratee) * rate_multiplier) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
 
+        function train(item) {
+            return growup(item, 2);
+        }
 
-        function training(ev) {
+        function levelup(item) {
+            return growup(item, 1);
+        }
+
+        function on_basic_training(ev) {
             datasheet.training_point -= 1;
             property_id = ev.target.parentElement.parentElement.querySelector(".basic_property").id;
             var item = datasheet.basic_properties.find(element => element.name == property_id);
-            item.training_growth_rate = function () {
-                let roll = roll_dice(1, 100, 0);
-                if (roll <= 3) {
-                    return 3;
-                } else if (roll <= Math.round(Math.round(item.basic * 3 + item.adjust_growth_rate) * 2 / 3)) {
-                    return 2;
-                } else if (roll <= Math.round(item.basic * 3 + item.adjust_growth_rate) * 2) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }();
+            item.training_growth_rate = train(item);
             ev.target.hidden = true;
             ev.target.parentElement.textContent = item.training_growth_rate.toString();
 
@@ -103,7 +111,7 @@
         <td><div class="basic_property dragable" id="${item.name}" draggable="true" ondragstart="dragstart_handler(event)" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">${item.basic}</div></td>
         <td></td>
         <td><input class="adjust_growth_rate_point" type="number" value="0" min="0" max="20" onchange="on_adjust_growth_rate_change(event)"></td>
-        <td><span class="growth_rate">${Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate}%</span></td>
+        <td><span class="growth_rate">${item.basic * 3 + item.adjust_growth_rate + item.training_growth_rate}%</span></td>
     </tr>`;
             return template;
         }
@@ -113,9 +121,9 @@
     <tr class="basic_property_item">
         <td>${item.name}</td>
         <td><span class="basic_property" id="${item.name}">${item.basic}</span></td>
-        <td><button class="training_button" onclick="training(event)">训练</button></td>
+        <td><button class="training_button" onclick="on_basic_training(event)">训练</button></td>
         <td>${item.adjust_growth_rate}</td>
-        <td><span class="growth_rate">${Math.round(item.basic * 3 + item.adjust_growth_rate) + item.training_growth_rate}%</span></td>
+        <td><span class="growth_rate">${item.basic * 3 + item.adjust_growth_rate + item.training_growth_rate}%</span></td>
     </tr>`;
             return template;
         }
