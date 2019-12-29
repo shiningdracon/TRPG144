@@ -152,8 +152,8 @@
         }
 
         function init(ev) {
-            document.getElementById("input_area").hidden = true;
-            document.getElementById("table_area").hidden = false;
+            document.getElementById("input_area").style.display = "none";
+            document.getElementById("table_area").style.display = "";
 
             let input_string = document.getElementById("properites_input").value;
             let regexp = /\s*(.+)\s+(\d+)\%*\s*/g;
@@ -180,8 +180,8 @@
             document.getElementById("training_point").textContent = datasheet.training_point.toString();
         }
 
-        document.getElementById("input_area").hidden = false;
-        document.getElementById("table_area").hidden = true;
+        document.getElementById("input_area").style.display = "";
+        document.getElementById("table_area").style.display = "none";
         datasheet = {
             reroll_point: 0,
             training_point: 0,
