@@ -157,12 +157,14 @@
 
             let input_string = document.getElementById("properites_input").value;
             let regexp = /\s*(.+)\s+(\d+)\%*\s*/g;
-            let properties = [...input_string.matchAll(regexp)];
+            let properties = [...input_string.match(regexp)];
 
             properties.forEach(line => {
+                let re = /\s*(.+)\s+(\d+)\%*\s*/g;
+                element = re.exec(line);
                 item = {
-                    name: line[1],
-                    growth_rate: line[2],
+                    name: element[1],
+                    growth_rate: element[2],
                     levelup_growth: 0,
                     training_result: 0,
                 };
