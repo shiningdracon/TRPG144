@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>桌脚不稳小龙人大冒险 建卡</title>
+    <style>
+        .dragable {
+            border: 1px gray solid;
+            padding: 2px;
+            text-align: center;
+        }
+
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="input_area">
+        <p><textarea id="properites_input" rows="10">力量 36%
+意志 40%
+体能 71%
+健康 56%
+敏捷 33%
+才智 33%
+智力 30%</textarea></p>
+        <p><button onclick="init()">下一步</button></p>
+    </div>
+    <div id="table_area">
+        <table>
+            <thead>
+                <tr>
+                    <th>属性</th>
+                    <th>成长率</th>
+                    <th>升级</th>
+                    <th>训练（<span id="training_point"></span>）</th>
+                </tr>
+            </thead>
+            <tbody id="basic_properties">
+            </tbody>
+        </table>
+        <p><button id="next_step" onclick="on_levelup()">升级</button></p>
+    </div>
+    <script>
+        function roll_dice(count, faces, addjust) {
+            var result = 0;
+            for (let index = 0; index < count; index++) {
+                result += Math.floor(Math.random() * faces) + 1;
+            }
+            return result + addjust;
+        }
+
+        function growup(item, rate_multiplier) {
+            let roll = roll_dice(1, 100, 0);
+            if (roll <= 3) {
+                return 3;
+            } else if (roll <= Math.round(item.growth_rate * rate_multiplier / 3)) {
+                return 2;
+            } else if (roll <= item.growth_rate * rate_multiplier) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        function train(item) {
+            return growup(item, 2);
+        }
+
+        function levelup(item) {
+            return growup(item, 1);
+        }
+
+        function ui_create_levelup_training(item) {
+            let template = `
+    <tr class="levelup_property_item">
+        <td>${item.name}</td>
+        <td><span class="growth_rate" id="${item.name}">${item.growth_rate}</span></td>
+        <td>${item.levelup_growth}<button class="reroll_button" onclick="on_levelup_reroll(event)">重投</button></td>
+        <td><button class="training_button" onclick="on_levelup_training(event)">训练</button></td>
+    </tr>`;
+            return template;
+        }
+
+        function ui_create_levelup(item) {
+            let template = `
+    <tr class="levelup_property_item">
+        <td>${item.name}</td>
+        <td><span class="growth_rate" id="${item.name}">${item.growth_rate}</span></td>
+        <td>未升级</td>
+        <td>未训练</td>
+    </tr>`;
+            return template;
+        }
+
+        function on_levelup(ev) {
+            datasheet.reroll_point = 1;
+            datasheet.training_point = 2;
+
+            datasheet.basic_properties.forEach(item => {
+                item.levelup_growth = levelup(item);
+            });
+
+            var template = "";
+            datasheet.basic_properties.forEach(element => {
+                template += ui_create_levelup_training(element);
+            });
+            document.getElementById("basic_properties").innerHTML = template;
+
+            document.getElementById("training_point").textContent = datasheet.training_point.toString();
+        }
+
+        function refresh_table() {
+            var template = "";
+            datasheet.basic_properties.forEach(item => {
+                template += ui_create_levelup(item);
+            });
+            document.getElementById("basic_properties").innerHTML = template;
+
+            document.getElementById("training_point").textContent = datasheet.training_point.toString();
+        }
+
+        function on_levelup_reroll(ev) {
+            datasheet.reroll_point -= 1;
+            property_id = ev.target.parentElement.parentElement.querySelector(".growth_rate").id;
+            var item = datasheet.basic_properties.find(element => element.name == property_id);
+            item.levelup_growth = levelup(item);
+
+            if (datasheet.reroll_point == 0) {
+                document.querySelectorAll(".levelup_property_item").forEach(element => {
+                    let item = datasheet.basic_properties.find(item => item.name == element.querySelector(".growth_rate").id);
+                    var reroll_button = element.querySelector(".reroll_button");
+                    if (reroll_button) {
+                        reroll_button.hidden = true;
+                        reroll_button.parentElement.textContent = item.levelup_growth.toString();
+                    }
+                });
+            }
+        }
+
+        function on_levelup_training(ev) {
+            datasheet.training_point -= 1;
+            document.getElementById("training_point").textContent = datasheet.training_point.toString();
+            property_id = ev.target.parentElement.parentElement.querySelector(".growth_rate").id;
+            var item = datasheet.basic_properties.find(element => element.name == property_id);
+            item.training_result = train(item);
+            ev.target.hidden = true;
+            ev.target.parentElement.textContent = item.training_result.toString();
+
+            if (datasheet.training_point == 0) {
+                document.querySelectorAll(".levelup_property_item").forEach(element => {
+                    let item = datasheet.basic_properties.find(item => item.name == element.querySelector(".growth_rate").id);
+                    var training_button = element.querySelector(".training_button");
+                    if (training_button) {
+                        training_button.hidden = true;
+                        training_button.parentElement.textContent = item.training_result.toString();
+                    }
+                });
+            }
+        }
+
+        function init() {
+            document.getElementById("input_area").hidden = true;
+            document.getElementById("table_area").hidden = false;
+
+            let input_string = document.getElementById("properites_input").value;
+            let regexp = /\s*(.+)\s+(\d+)\%*\s*[\n$]/g;
+            let properties = [...input_string.matchAll(regexp)];
+
+            properties.forEach(line => {
+                item = {
+                    name: line[1],
+                    growth_rate: line[2],
+                    levelup_growth: 0,
+                    training_result: 0,
+                };
+                datasheet.basic_properties.push(item);
+            });
+
+            refresh_table();
+        }
+
+        document.getElementById("input_area").hidden = false;
+        document.getElementById("table_area").hidden = true;
+        datasheet = {
+            reroll_point: 0,
+            training_point: 0,
+            basic_properties: Array(),
+        };
+    </script>
+</body>
+
+</html>
