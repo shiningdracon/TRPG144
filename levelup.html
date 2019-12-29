@@ -26,7 +26,7 @@
 敏捷 0%
 才智 0%
 智力 0%</textarea></p>
-        <p><button onclick="init()">下一步</button></p>
+        <p><button onclick="init(event)">下一步</button></p>
     </div>
     <div id="table_area">
         <table>
@@ -112,16 +112,6 @@
             document.getElementById("training_point").textContent = datasheet.training_point.toString();
         }
 
-        function refresh_table() {
-            var template = "";
-            datasheet.basic_properties.forEach(item => {
-                template += ui_create_levelup(item);
-            });
-            document.getElementById("basic_properties").innerHTML = template;
-
-            document.getElementById("training_point").textContent = datasheet.training_point.toString();
-        }
-
         function on_levelup_reroll(ev) {
             datasheet.reroll_point -= 1;
             property_id = ev.target.parentElement.parentElement.querySelector(".growth_rate").id;
@@ -161,7 +151,7 @@
             }
         }
 
-        function init() {
+        function init(ev) {
             document.getElementById("input_area").hidden = true;
             document.getElementById("table_area").hidden = false;
 
@@ -179,7 +169,13 @@
                 datasheet.basic_properties.push(item);
             });
 
-            refresh_table();
+            var template = "";
+            datasheet.basic_properties.forEach(item => {
+                template += ui_create_levelup(item);
+            });
+            document.getElementById("basic_properties").innerHTML = template;
+
+            document.getElementById("training_point").textContent = datasheet.training_point.toString();
         }
 
         document.getElementById("input_area").hidden = false;
