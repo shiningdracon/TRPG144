@@ -20,12 +20,12 @@
 <body>
     <div id="input_area">
         <p><textarea id="properites_input" rows="10">力量 36%
-意志 40%
-体能 71%
-健康 56%
-敏捷 33%
-才智 33%
-智力 30%</textarea></p>
+意志 0%
+体能 0%
+健康 0%
+敏捷 0%
+才智 0%
+智力 0%</textarea></p>
         <p><button onclick="init()">下一步</button></p>
     </div>
     <div id="table_area">
@@ -166,7 +166,7 @@
             document.getElementById("table_area").hidden = false;
 
             let input_string = document.getElementById("properites_input").value;
-            let regexp = /\s*(.+)\s+(\d+)\%*\s*[\n$]/g;
+            let regexp = /\s*(.+)\s+(\d+)\%*\s*/g;
             let properties = [...input_string.matchAll(regexp)];
 
             properties.forEach(line => {
